@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Volume2, Video, Mic, Camera, Trash2 } from 'lucide-react';
+import { Play, Pause, Volume2, Video, Mic, Camera } from 'lucide-react';
 import { useProfile, ProfileData } from '@/contexts/ProfileContext';
 import { toast } from '@/hooks/use-toast';
 
@@ -106,95 +105,65 @@ const ProfileDisplay: React.FC = () => {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto glass-effect border-purple-200/30 mb-6">
-      <CardHeader>
-        <CardTitle className="text-xl text-amber-300 text-center">
-          Your Saved Profiles
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {savedProfiles.map((profile) => (
-            <div key={profile.id} className="text-center space-y-3">
-              {/* Circular Profile Display */}
-              <div className="relative group">
-                <div className="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-purple-400/50 hover:border-purple-400 transition-colors cursor-pointer">
-                  {profile.type === 'video' && profile.videoUrl ? (
-                    <video
-                      src={profile.videoUrl}
-                      className="w-full h-full object-cover"
-                      muted
-                      onClick={() => handlePlay(profile)}
-                    />
-                  ) : (
-                    <img
-                      src={getProfileImage(profile)}
-                      alt={profile.title}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                
-                {/* Play/Pause Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-24 h-24 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm">
-                    {playingProfile === profile.id ? (
-                      <Button
-                        onClick={() => handleStop(profile.id)}
-                        size="sm"
-                        className="w-8 h-8 rounded-full p-0 bg-white/20 hover:bg-white/30"
-                      >
-                        <Pause className="w-4 h-4 text-white" />
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => handlePlay(profile)}
-                        size="sm"
-                        className="w-8 h-8 rounded-full p-0 bg-white/20 hover:bg-white/30"
-                      >
-                        <Play className="w-4 h-4 text-white ml-0.5" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Type Indicator */}
-                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-br from-purple-500 to-amber-500 rounded-full flex items-center justify-center border-2 border-white">
-                  {getProfileIcon(profile.type)}
-                </div>
-
-                {/* Playing Indicator */}
-                {playingProfile === profile.id && (
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
-                    <Volume2 className="w-3 h-3 text-white" />
-                  </div>
-                )}
-              </div>
-
-              {/* Profile Info */}
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-amber-300 truncate">
-                  {profile.title}
-                </h4>
-                <p className="text-xs text-amber-200/60">
-                  {profile.createdAt.toLocaleDateString()}
-                </p>
-                
-                {/* Delete Button */}
+    <div className="flex justify-center gap-4 mb-6">
+      {savedProfiles.map((profile) => (
+        <div key={profile.id} className="relative group">
+          {/* Circular Profile Picture */}
+          <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-purple-400/50 hover:border-purple-400 transition-colors cursor-pointer">
+            {profile.type === 'video' && profile.videoUrl ? (
+              <video
+                src={profile.videoUrl}
+                className="w-full h-full object-cover"
+                muted
+                onClick={() => handlePlay(profile)}
+              />
+            ) : (
+              <img
+                src={getProfileImage(profile)}
+                alt={profile.title}
+                className="w-full h-full object-cover"
+                onClick={() => handlePlay(profile)}
+              />
+            )}
+          </div>
+          
+          {/* Play/Pause Overlay */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="w-20 h-20 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm">
+              {playingProfile === profile.id ? (
                 <Button
-                  onClick={() => handleDelete(profile)}
-                  variant="outline"
+                  onClick={() => handleStop(profile.id)}
                   size="sm"
-                  className="h-6 px-2 text-xs border-red-400/50 text-red-400 hover:bg-red-500/10"
+                  className="w-8 h-8 rounded-full p-0 bg-white/20 hover:bg-white/30"
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Pause className="w-4 h-4 text-white" />
                 </Button>
-              </div>
+              ) : (
+                <Button
+                  onClick={() => handlePlay(profile)}
+                  size="sm"
+                  className="w-8 h-8 rounded-full p-0 bg-white/20 hover:bg-white/30"
+                >
+                  <Play className="w-4 h-4 text-white ml-0.5" />
+                </Button>
+              )}
             </div>
-          ))}
+          </div>
+
+          {/* Type Indicator */}
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-br from-purple-500 to-amber-500 rounded-full flex items-center justify-center border-2 border-white">
+            {getProfileIcon(profile.type)}
+          </div>
+
+          {/* Playing Indicator */}
+          {playingProfile === profile.id && (
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+              <Volume2 className="w-3 h-3 text-white" />
+            </div>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      ))}
+    </div>
   );
 };
 
