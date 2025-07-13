@@ -5,6 +5,7 @@ import { Video, Camera, Smile, ArrowLeft } from 'lucide-react';
 import LiveVideo from './LiveVideo';
 import VoiceOverMemoji from './VoiceOverMemoji';
 import VoiceOverPhoto from './VoiceOverPhoto';
+import ProfileDisplay from './ProfileDisplay';
 
 type CoverLetterType = 'video' | 'memoji' | 'photo' | null;
 
@@ -39,7 +40,9 @@ const VirtualCoverLetter: React.FC = () => {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto glass-effect border-purple-200/30">
+    <div className="w-full max-w-4xl mx-auto space-y-6">
+      <ProfileDisplay />
+      <Card className="w-full glass-effect border-purple-200/30">
       <CardHeader className="text-center">
         <CardTitle className="text-3xl font-light text-amber-300 mb-4">
           Create Your Virtual Cover Letter
@@ -140,6 +143,7 @@ const VirtualCoverLetter: React.FC = () => {
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 };
 
