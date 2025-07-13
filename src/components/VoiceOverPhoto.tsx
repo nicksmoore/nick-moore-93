@@ -2,8 +2,9 @@ import React, { useState, useRef, useCallback } from 'react';
 import RecordRTC from 'recordrtc';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Camera, Mic, Square, Play, Download, RotateCcw, Upload, Volume2 } from 'lucide-react';
+import { Camera, Mic, Square, Play, Download, RotateCcw, Upload, Volume2, Save } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useProfile } from '@/contexts/ProfileContext';
 
 const VoiceOverPhoto: React.FC = () => {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -17,6 +18,7 @@ const VoiceOverPhoto: React.FC = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { saveProfile } = useProfile();
 
   const handlePhotoUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -173,6 +175,22 @@ const VoiceOverPhoto: React.FC = () => {
     }
   }, [photoUrl, audioUrl]);
 
+  const saveToProfile = useCallback(() => {
+    if (photoUrl && audioUrl) {
+      saveProfile({
+        type: 'photo',
+        photoUrl,
+        audioUrl,
+        title: `Photo Cover Letter - ${new Date().toLocaleDateString()}`,
+      });
+      
+      toast({
+        title: "Saved to Profile!",
+        description: "Your photo cover letter has been saved to your profile",
+      });
+    }
+  }, [photoUrl, audioUrl, saveProfile]);
+
   return (
     <Card className="w-full max-w-2xl mx-auto glass-effect border-purple-200/30">
       <CardHeader>
@@ -285,6 +303,13 @@ const VoiceOverPhoto: React.FC = () => {
 
           {photoUrl && audioUrl && (
             <>
+              <Button
+                onClick={saveToProfile}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl"
+              >
+                <Save className="w-5 h-5 mr-2" />
+                Save to Profile
+              </Button>
               <Button
                 onClick={playAudio}
                 className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl"

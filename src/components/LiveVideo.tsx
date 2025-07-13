@@ -3,8 +3,9 @@ import Webcam from 'react-webcam';
 import RecordRTC from 'recordrtc';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Video, Square, Play, Download, RotateCcw } from 'lucide-react';
+import { Video, Square, Play, Download, RotateCcw, Save } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useProfile } from '@/contexts/ProfileContext';
 
 const LiveVideo: React.FC = () => {
   const webcamRef = useRef<Webcam>(null);
@@ -13,6 +14,7 @@ const LiveVideo: React.FC = () => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { saveProfile } = useProfile();
 
   const videoConstraints = {
     width: 1280,
@@ -110,6 +112,21 @@ const LiveVideo: React.FC = () => {
     }
   }, [videoUrl]);
 
+  const saveToProfile = useCallback(() => {
+    if (videoUrl) {
+      saveProfile({
+        type: 'video',
+        videoUrl,
+        title: `Video Cover Letter - ${new Date().toLocaleDateString()}`,
+      });
+      
+      toast({
+        title: "Saved to Profile!",
+        description: "Your video cover letter has been saved to your profile",
+      });
+    }
+  }, [videoUrl, saveProfile]);
+
   return (
     <Card className="w-full max-w-2xl mx-auto glass-effect border-purple-200/30">
       <CardHeader>
@@ -174,6 +191,13 @@ const LiveVideo: React.FC = () => {
 
           {videoUrl && (
             <>
+              <Button
+                onClick={saveToProfile}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl"
+              >
+                <Save className="w-5 h-5 mr-2" />
+                Save to Profile
+              </Button>
               <Button
                 onClick={resetRecording}
                 variant="outline"

@@ -3,8 +3,9 @@ import Lottie from 'lottie-react';
 import RecordRTC from 'recordrtc';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mic, Square, Play, Download, RotateCcw, Volume2 } from 'lucide-react';
+import { Mic, Square, Play, Download, RotateCcw, Volume2, Save } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useProfile } from '@/contexts/ProfileContext';
 
 // Simple memoji animation data (you can replace with actual Lottie file)
 const memojiAnimationData = {
@@ -76,6 +77,7 @@ const VoiceOverMemoji: React.FC = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const timeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { saveProfile } = useProfile();
 
   const startRecording = useCallback(async () => {
     try {
@@ -187,6 +189,21 @@ const VoiceOverMemoji: React.FC = () => {
     }
   }, [audioUrl]);
 
+  const saveToProfile = useCallback(() => {
+    if (audioUrl) {
+      saveProfile({
+        type: 'memoji',
+        audioUrl,
+        title: `Memoji Cover Letter - ${new Date().toLocaleDateString()}`,
+      });
+      
+      toast({
+        title: "Saved to Profile!",
+        description: "Your memoji cover letter has been saved to your profile",
+      });
+    }
+  }, [audioUrl, saveProfile]);
+
   return (
     <Card className="w-full max-w-2xl mx-auto glass-effect border-purple-200/30">
       <CardHeader>
@@ -275,6 +292,13 @@ const VoiceOverMemoji: React.FC = () => {
 
           {audioUrl && (
             <>
+              <Button
+                onClick={saveToProfile}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl"
+              >
+                <Save className="w-5 h-5 mr-2" />
+                Save to Profile
+              </Button>
               <Button
                 onClick={playAudio}
                 className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl"
