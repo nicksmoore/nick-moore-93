@@ -687,6 +687,42 @@ export type Database = {
           },
         ]
       }
+      virtual_profiles: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          id: string
+          photo_url: string | null
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          id?: string
+          photo_url?: string | null
+          title: string
+          type: string
+          updated_at?: string
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          id?: string
+          photo_url?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       visual_assets: {
         Row: {
           asset_type: string
