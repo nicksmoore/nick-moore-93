@@ -32,7 +32,14 @@ interface ProfileProviderProps {
 }
 
 export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
-  const [savedProfiles, setSavedProfiles] = useState<ProfileData[]>([]);
+  const [savedProfiles, setSavedProfiles] = useState<ProfileData[]>(() => {
+    try {
+      const stored = localStorage.getItem('savedProfiles');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
 
   const saveProfile = (profile: Omit<ProfileData, 'id' | 'createdAt'>) => {
     const newProfile: ProfileData = {
@@ -40,15 +47,20 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
       id: crypto.randomUUID(),
       createdAt: new Date(),
     };
-    setSavedProfiles(prev => [...prev, newProfile]);
+    const updatedProfiles = [...savedProfiles, newProfile];
+    setSavedProfiles(updatedProfiles);
+    localStorage.setItem('savedProfiles', JSON.stringify(updatedProfiles));
   };
 
   const deleteProfile = (id: string) => {
-    setSavedProfiles(prev => prev.filter(profile => profile.id !== id));
+    const updatedProfiles = savedProfiles.filter(profile => profile.id !== id);
+    setSavedProfiles(updatedProfiles);
+    localStorage.setItem('savedProfiles', JSON.stringify(updatedProfiles));
   };
 
   const clearAllProfiles = () => {
     setSavedProfiles([]);
+    localStorage.removeItem('savedProfiles');
   };
 
   return (
