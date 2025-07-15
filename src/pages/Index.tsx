@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { useUser, UserButton } from '@clerk/clerk-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,19 +51,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import VirtualCoverLetter from '@/components/VirtualCoverLetter';
-import { useAuth } from '@/contexts/AuthContext';
 
 
 const Index = () => {
+  const { user } = useUser();
   const [activeSection, setActiveSection] = useState('about');
   const [isVisible, setIsVisible] = useState(false);
   const [showAudioPlayer, setShowAudioPlayer] = useState(false);
   
   // Virtual Cover Letter State
   const [showCoverLetter, setShowCoverLetter] = useState(false);
-  
-  // Auth
-  const { user, signOut } = useAuth();
   
 
   useEffect(() => {
@@ -470,17 +468,18 @@ const Index = () => {
           <div className="absolute top-6 right-6 z-10">
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <p className="text-sm text-amber-300 font-medium">{user?.email}</p>
+                <p className="text-sm text-amber-300 font-medium">{user?.firstName || user?.emailAddresses?.[0]?.emailAddress}</p>
                 <p className="text-xs text-amber-200/60">Signed in</p>
               </div>
-              <Button
-                onClick={signOut}
-                variant="outline"
-                size="sm"
-                className="border-white/20 text-amber-300 hover:bg-white/10 hover:text-amber-200"
-              >
-                Sign Out
-              </Button>
+              <UserButton 
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8",
+                    userButtonPopoverCard: "bg-card border-border",
+                    userButtonPopoverActionButton: "text-foreground hover:bg-accent"
+                  }
+                }}
+              />
             </div>
           </div>
 
